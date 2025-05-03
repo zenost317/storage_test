@@ -61,7 +61,7 @@ public class Supplier extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 91, 794, 459));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 91, 790, 459));
 
         btnClose.setBackground(new java.awt.Color(255, 51, 51));
         btnClose.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
