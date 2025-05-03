@@ -1,7 +1,7 @@
 package view;
 
 import controller.LoginController;
-import model.database;
+import dao.database;
 import javax.swing.*;
 import java.sql.*;
 import java.awt.event.ActionListener;

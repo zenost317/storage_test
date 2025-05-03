@@ -4,7 +4,7 @@
  */
 package controller;
 
-import model.database;
+import dao.database;
 import model.login;
 import view.Login;
 import view.Home;

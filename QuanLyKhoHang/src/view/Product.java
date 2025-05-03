@@ -4,6 +4,15 @@
  */
 package view;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.List;
+import model.product;
+import controller.ProductController;
+
 /**
  *
  * @author Acer
@@ -11,6 +20,8 @@ package view;
 public class Product extends javax.swing.JFrame {
 
     private static Product instance;
+    private DefaultTableModel tableModel;
+    private JButton btnEdit;
 
     public static Product getInstance() {
         if (instance == null) {
@@ -24,6 +35,26 @@ public class Product extends javax.swing.JFrame {
      */
     public Product() {
         initComponents();
+        tableModel = (DefaultTableModel) jTable1.getModel();
+        loadProducts();
+    }
+
+    private void loadProducts() {
+        try {
+            List<product> products = new ProductController().getAllProducts();
+            tableModel.setRowCount(0);
+            for (product p : products) {
+                tableModel.addRow(new Object[]{
+                    p.getId(),
+                    p.getName(),
+                    p.getSupplierId(),
+                    p.getPrice(),
+                    p.getQuantity()
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu sản phẩm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -113,32 +144,29 @@ public class Product extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnSave)
-                        .addGap(12, 12, 12)
-                        .addComponent(btnDelete)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnClose)))
-                .addContainerGap())
+                .addGap(6, 6, 6)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 794, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(520, 520, 520)
+                .addComponent(btnSave)
+                .addGap(12, 12, 12)
+                .addComponent(btnDelete)
+                .addGap(12, 12, 12)
+                .addComponent(btnClose))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(6, 6, 6)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnClose)
                     .addComponent(btnSave)
-                    .addComponent(btnDelete))
-                .addContainerGap())
+                    .addComponent(btnDelete)
+                    .addComponent(btnClose)))
         );
 
         pack();
@@ -152,10 +180,52 @@ public class Product extends javax.swing.JFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow >= 0) {
+            int id = (int) tableModel.getValueAt(selectedRow, 0);
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa sản phẩm này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                try {
+                    new ProductController().deleteProduct(id);
+                    loadProducts();
+                    JOptionPane.showMessageDialog(this, "Xóa sản phẩm thành công!");
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi xóa sản phẩm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một sản phẩm để xóa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
+        JTextField nameField = new JTextField();
+        JTextField supplierIdField = new JTextField();
+        JTextField priceField = new JTextField();
+
+        Object[] fields = {
+            "Tên sản phẩm:", nameField,
+            "ID nhà cung cấp:", supplierIdField,
+            "Giá:", priceField
+        };
+
+        int option = JOptionPane.showConfirmDialog(this, fields, "Thêm sản phẩm", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            product p = new product();
+            p.setName(nameField.getText());
+            p.setSupplierId(Integer.parseInt(supplierIdField.getText()));
+            p.setPrice(Double.parseDouble(priceField.getText()));
+            p.setQuantity(0); // Số lượng ban đầu là 0
+
+            try {
+                new ProductController().addProduct(p);
+                loadProducts();
+                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Lỗi khi thêm sản phẩm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     /**

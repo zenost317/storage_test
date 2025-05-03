@@ -4,6 +4,15 @@
  */
 package view;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.List;
+import model.supplier;
+import controller.SupplierController;
+
 /**
  *
  * @author Acer
@@ -11,6 +20,8 @@ package view;
 public class Supplier extends javax.swing.JFrame {
 
     private static Supplier instance;
+    private DefaultTableModel tableModel;
+    private JButton btnAdd;
 
     public static Supplier getInstance() {
         if (instance == null) {
@@ -24,6 +35,26 @@ public class Supplier extends javax.swing.JFrame {
      */
     public Supplier() {
         initComponents();
+        tableModel = (DefaultTableModel) jTable1.getModel();
+        loadSuppliers();
+    }
+
+    private void loadSuppliers() {
+        try {
+            List<supplier> suppliers = new SupplierController().getAllSuppliers();
+            tableModel.setRowCount(0);
+            for (supplier s : suppliers) {
+                tableModel.addRow(new Object[]{
+                    s.getId(),
+                    s.getName(),
+                    s.getPhone(),
+                    s.getEmail(),
+                    s.getAddress()
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu nhà cung cấp: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -39,14 +70,14 @@ public class Supplier extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         btnClose = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Quản lý nhà cung ứng");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 800, 79));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -61,8 +92,6 @@ public class Supplier extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 91, 790, 459));
-
         btnClose.setBackground(new java.awt.Color(255, 51, 51));
         btnClose.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnClose.setText("Quay lại");
@@ -71,7 +100,55 @@ public class Supplier extends javax.swing.JFrame {
                 btnCloseActionPerformed(evt);
             }
         });
-        getContentPane().add(btnClose, new org.netbeans.lib.awtextra.AbsoluteConstraints(694, 562, -1, -1));
+
+        btnSave.setBackground(new java.awt.Color(51, 255, 51));
+        btnSave.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnSave.setText("Thêm");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setBackground(new java.awt.Color(102, 102, 255));
+        btnDelete.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnDelete.setText("Xóa");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 794, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(520, 520, 520)
+                .addComponent(btnSave)
+                .addGap(12, 12, 12)
+                .addComponent(btnDelete)
+                .addGap(12, 12, 12)
+                .addComponent(btnClose))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnSave)
+                    .addComponent(btnDelete)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(btnClose))))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -81,6 +158,42 @@ public class Supplier extends javax.swing.JFrame {
         setVisible(false);
         Home.getInstance().setVisible(true);
     }//GEN-LAST:event_btnCloseActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+        JTextField nameField = new JTextField();
+        JTextField phoneField = new JTextField();
+        JTextField emailField = new JTextField();
+        JTextField addressField = new JTextField();
+
+        Object[] fields = {
+            "Tên:", nameField,
+            "Số điện thoại:", phoneField,
+            "Email:", emailField,
+            "Địa chỉ:", addressField
+        };
+
+        int option = JOptionPane.showConfirmDialog(this, fields, "Thêm nhà cung cấp", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            supplier s = new supplier();
+            s.setName(nameField.getText());
+            s.setPhone(phoneField.getText());
+            s.setEmail(emailField.getText());
+            s.setAddress(addressField.getText());
+
+            try {
+                new SupplierController().addSupplier(s);
+                loadSuppliers();
+                JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thành công!");
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Lỗi khi thêm nhà cung cấp: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -122,6 +235,8 @@ public class Supplier extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

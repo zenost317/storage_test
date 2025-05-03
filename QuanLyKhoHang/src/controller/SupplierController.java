@@ -4,10 +4,22 @@
  */
 package controller;
 
+import model.supplier;
+import java.sql.SQLException;
+import java.util.List;
+import dao.supplierData;
 /**
  *
  * @author Acer
  */
 public class SupplierController {
-    
+    private supplierData supplierData = new supplierData();
+
+    public List<supplier> getAllSuppliers() throws SQLException {
+        return supplierData.getAllSuppliers();
+    }
+
+    public void addSupplier(supplier s) throws SQLException {
+        supplierData.addSupplier(s);
+    }
 }

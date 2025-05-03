@@ -11,9 +11,9 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import model.userData;
+import dao.userData;
 import model.user;
-import model.database;
+import dao.database;
 import view.User;
 
 /**

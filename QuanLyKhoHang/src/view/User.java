@@ -138,7 +138,7 @@ public class User extends javax.swing.JFrame {
         jTable1.setGridColor(new java.awt.Color(0, 0, 0));
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 97, 794, 453));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 97, 790, 453));
 
         btnClose.setBackground(new java.awt.Color(255, 51, 51));
         btnClose.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
