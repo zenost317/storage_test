@@ -1,0 +1,47 @@
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle, Circle, Arrow
+
+# Khởi tạo hình vẽ
+fig, ax = plt.subplots()
+
+# Vẽ thân robot (hình chữ nhật)
+robot_body = Rectangle((-0.5, -0.5), 1, 1, color='gray')
+ax.add_patch(robot_body)
+
+# Vẽ bốn bánh xe (hình chữ nhật nhỏ)
+wheel_width = 0.1
+wheel_height = 0.2
+wheels = [
+    Rectangle((-0.55, 0.4), wheel_width, wheel_height, color='black'),  # Trước trái
+    Rectangle((0.45, 0.4), wheel_width, wheel_height, color='black'),   # Trước phải
+    Rectangle((-0.55, -0.6), wheel_width, wheel_height, color='black'), # Sau trái
+    Rectangle((0.45, -0.6), wheel_width, wheel_height, color='black')   # Sau phải
+]
+for wheel in wheels:
+    ax.add_patch(wheel)
+
+# Vẽ hai joystick (hình tròn)
+joystick_left = Circle((-1.5, 0), 0.3, color='blue', label='Joystick Trái')
+joystick_right = Circle((1.5, 0), 0.3, color='red', label='Joystick Phải')
+ax.add_patch(joystick_left)
+ax.add_patch(joystick_right)
+
+# Vẽ vector hướng di chuyển cho từng bánh xe
+arrows = [
+    Arrow(-0.5, 0.5, 0.1, 0.1, width=0.05, color='green'),  # Trước trái
+    Arrow(0.5, 0.5, -0.1, 0.1, width=0.05, color='green'),  # Trước phải
+    Arrow(-0.5, -0.5, 0.1, -0.1, width=0.05, color='green'),# Sau trái
+    Arrow(0.5, -0.5, -0.1, -0.1, width=0.05, color='green') # Sau phải
+]
+for arrow in arrows:
+    ax.add_patch(arrow)
+
+# Đặt giới hạn và tiêu đề
+ax.set_xlim(-2, 2)
+ax.set_ylim(-1, 1)
+ax.set_aspect('equal')
+ax.set_title('Mô phỏng Robot 2D với Bánh Xe và Joystick')
+ax.legend()
+
+# Hiển thị hình vẽ
+plt.show()
