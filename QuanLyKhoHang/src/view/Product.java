@@ -21,7 +21,6 @@ public class Product extends javax.swing.JFrame {
 
     private static Product instance;
     private DefaultTableModel tableModel;
-    private JButton btnEdit;
 
     public static Product getInstance() {
         if (instance == null) {
@@ -67,10 +66,11 @@ public class Product extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        btnClose = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        btnClose = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -78,15 +78,6 @@ public class Product extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Quản lý sản phẩm");
-
-        btnClose.setBackground(new java.awt.Color(255, 51, 51));
-        btnClose.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btnClose.setText("Quay lại");
-        btnClose.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCloseActionPerformed(evt);
-            }
-        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -122,12 +113,30 @@ public class Product extends javax.swing.JFrame {
             jTable1.getColumnModel().getColumn(0).setResizable(false);
         }
 
+        btnClose.setBackground(new java.awt.Color(255, 51, 51));
+        btnClose.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnClose.setText("Quay lại");
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseActionPerformed(evt);
+            }
+        });
+
         btnDelete.setBackground(new java.awt.Color(102, 102, 255));
         btnDelete.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnDelete.setText("Xóa");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnEdit.setBackground(new java.awt.Color(102, 204, 255));
+        btnEdit.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        btnEdit.setText("Sửa");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
             }
         });
 
@@ -144,17 +153,23 @@ public class Product extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 794, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(520, 520, 520)
-                .addComponent(btnSave)
-                .addGap(12, 12, 12)
-                .addComponent(btnDelete)
-                .addGap(12, 12, 12)
-                .addComponent(btnClose))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnSave)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEdit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDelete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnClose)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,11 +177,13 @@ public class Product extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSave)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClose)
                     .addComponent(btnDelete)
-                    .addComponent(btnClose)))
+                    .addComponent(btnEdit)
+                    .addComponent(btnSave))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -198,16 +215,56 @@ public class Product extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow >= 0) {
+            int id = (int) tableModel.getValueAt(selectedRow, 0);
+            String name = (String) tableModel.getValueAt(selectedRow, 1);
+            int supplierId = (int) tableModel.getValueAt(selectedRow, 2);
+            double price = (double) tableModel.getValueAt(selectedRow, 3);
+            int quantity = (int) tableModel.getValueAt(selectedRow, 4);
+
+            JTextField nameField = new JTextField(name);
+            JTextField supplierIdField = new JTextField(String.valueOf(supplierId));
+            JTextField priceField = new JTextField(String.valueOf(price));
+            JTextField quantityField = new JTextField(String.valueOf(quantity));
+
+            Object[] fields = {
+                "Tên sản phẩm:", nameField,
+                "ID nhà cung cấp:", supplierIdField,
+                "Giá:", priceField,
+                "Số lượng:", quantityField
+            };
+
+            int option = JOptionPane.showConfirmDialog(this, fields, "Sửa sản phẩm", JOptionPane.OK_CANCEL_OPTION);
+            if (option == JOptionPane.OK_OPTION) {
+                product p = new product(id, nameField.getText(), Double.parseDouble(priceField.getText()), Integer.parseInt(quantityField.getText()), Integer.parseInt(supplierIdField.getText()));
+                try {
+                    new ProductController().updateProduct(p);
+                    loadProducts();
+                    JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!");
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật sản phẩm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một sản phẩm để sửa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditActionPerformed
+
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         // TODO add your handling code here:
         JTextField nameField = new JTextField();
         JTextField supplierIdField = new JTextField();
         JTextField priceField = new JTextField();
+        JTextField quantityField = new JTextField();
 
         Object[] fields = {
             "Tên sản phẩm:", nameField,
             "ID nhà cung cấp:", supplierIdField,
-            "Giá:", priceField
+            "Giá:", priceField,
+            "Số lượng:", quantityField
         };
 
         int option = JOptionPane.showConfirmDialog(this, fields, "Thêm sản phẩm", JOptionPane.OK_CANCEL_OPTION);
@@ -216,7 +273,7 @@ public class Product extends javax.swing.JFrame {
             p.setName(nameField.getText());
             p.setSupplierId(Integer.parseInt(supplierIdField.getText()));
             p.setPrice(Double.parseDouble(priceField.getText()));
-            p.setQuantity(0); // Số lượng ban đầu là 0
+            p.setQuantity(Integer.parseInt(quantityField.getText()));
 
             try {
                 new ProductController().addProduct(p);
@@ -257,6 +314,17 @@ public class Product extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(Product.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Product().setVisible(true);
@@ -267,6 +335,7 @@ public class Product extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
